@@ -1,107 +1,15 @@
-function sliderFn() {
-	const slides = document.querySelectorAll(".slide");
-	const slidesWrapper = document.querySelector(".slider-wrapper");
-	let currentSlide = 0;
-
-	function renderSlides() {
-		slides.forEach((slide, index) => {
-			if (index === currentSlide) {
-				slide.classList.add("show-slide");
-			} else {
-				slide.classList.remove("show-slide");
-			}
-		});
-	}
-
-	function goToNextSlide() {
-		if (currentSlide === slides.length - 1) {
-			currentSlide = 0;
-		} else {
-			currentSlide++;
-		}
-		renderSlides();
-	}
-
-	// 2. ლექციაზე შექმნილ სლაიდერს დავამატოთ:
-	//    2.1. დავამატოთ სლაიდების ავტომატური ცვლილება 5 წამიანი ინტერვალით
-	//    2.2. როდესაც ავტომატურად ხდება სლაიდების შეცვლა თუ მაუსს მივიტან სურათთან, ავტომატური სლაიდი გაჩერდეს.
-	//    2.3. თუ მაუსი მიტანილი მაქვს სურათზე და შემდეგ გამოვწევ სურათიდან, ავტომატური სლაიდი გაგრძელდეს. მოუსმინეთ  mouseenter, mouseleave  ივენთებს
-
-	let slideInterval = setInterval(goToNextSlide, 5000);
-
-	slidesWrapper.addEventListener("mouseenter", () => {
-		if (slideInterval) {
-			// console.log("clear");
-			clearInterval(slideInterval);
-			slideInterval = null;
-		}
-	});
-	slidesWrapper.addEventListener("mouseleave", () => {
-		// console.log("set");
-		slideInterval = setInterval(goToNextSlide, 5000);
-	});
-}
-
-sliderFn();
-
-// 1. setTimeout ან setInterval - ის გამოყენებით გააკეთეთ საათი რომელიც იმუშავებს როგორც ნამდვილი სააათი. გამოიყენეთ ატვირთული სურათი (საათი.png).
-const clock = document.querySelector("#clock");
-const showTime = () => {
-	const date = new Date();
-	const hours = date.getHours();
-	const minutes = date.getMinutes();
-	const seconds = date.getSeconds();
-
-	clock.textContent = `${hours.toString().padStart(2, 0)}:${(
-		minutes + ""
-	).padStart(2, 0)}:${(seconds + "").padStart(2, 0)}`;
-
-	// clock.textContent = `${hours}:${minutes}:${seconds}`;
-};
-showTime();
-setInterval(showTime, 1000);
-
-//  3*(optional) დავამატოთ მარტივი countdown რომელიც გვიჩვენებს მომდევნო ლექციამდე (5 მარტი, 20:00) დარჩენილ დროს (დღე, საათი, წუთი)
-
-const countdown = document.querySelector("#countdown");
-const showCountdown = () => {
-	const currentDate = new Date();
-	const futureDate = new Date("Mar 12, 2025 20:00:00");
-	const diff = futureDate - currentDate;
-
-	const days = Math.floor(diff / 1000 / 60 / 60 / 24);
-	const hours = Math.floor(diff / 1000 / 60 / 60) % 24;
-	const minutes = Math.floor(diff / 1000 / 60) % 60;
-	const seconds = Math.floor(diff / 1000) % 60;
-
-	countdown.textContent = `${days} days ${hours} hours ${minutes} minutes`;
-};
-
-showCountdown();
-
-setInterval(showCountdown, 60000);
-
-const closeModalBtn = document.querySelector(".close-modal");
-const closeDialogBtn = document.querySelectorAll(".close-dialog");
-closeDialogBtn.forEach((btn) => {
-	btn.addEventListener("click", () => {
-		const dialog = btn.closest("dialog");
-		dialog.close();
-	});
-});
-
-closeModalBtn.addEventListener("click", () => {
-	const modal = closeModalBtn.closest(".modal");
-	modal.classList.remove("active");
-});
 function formValidation() {
 	const form = document.querySelector("#form");
 	const emailInput = document.querySelector("#email");
 	const nameInput = document.querySelector("#name");
-	const passwordInput = document.querySelector("#password");
 	const ageInput = document.querySelector("#age");
 	const modal = document.querySelector("#reg-confirmation");
 	const dialog = document.querySelector("#confirmation-dialog");
+	// დამატებული კოდი /////////////////////////////////////////////////////////////////////////////
+	const passwordInput = document.querySelector("#password");
+	const confirmPasswordInput = document.querySelector("#confirm-password");
+	const personalNumberInput = document.querySelector("#personal-number");
+	const mobileNumberInput = document.querySelector("#mobile-number");
 
 	const showErrorMessage = (input, message) => {
 		input.closest(".form-group").classList.remove("success");
@@ -116,6 +24,56 @@ function formValidation() {
 			message;
 	};
 
+			const isPersonalNumberValid = () => {
+				const val = personalNumberInput.value.trim();
+				if (!/^\d{11}$/.test(val)) {
+					showErrorMessage(personalNumberInput, "Personal number must be exactly 11 digits.");
+					return false;
+				}
+				showSuccessMessage(personalNumberInput);
+				return true;
+			};
+
+			const isMobileNumberValid = () => {
+				const val = mobileNumberInput.value.trim();
+				if (!/^\d{9}$/.test(val)) {
+					showErrorMessage(mobileNumberInput, "Mobile number must be exactly 9 digits.");
+					return false;
+				}
+				showSuccessMessage(mobileNumberInput);
+				return true;
+			};
+
+			const isPasswordValid = () => {
+				if (passwordInput.value.length < 6) {
+					showErrorMessage(passwordInput, "Password must be at least 6 characters long.");
+					return false;
+				}
+				showSuccessMessage(passwordInput);
+				return true;
+			};
+
+			const isConfirmPasswordValid = () => {
+				if (confirmPasswordInput.value !== passwordInput.value) {
+					showErrorMessage(confirmPasswordInput, "Passwords do not match.");
+					return false;
+				}
+				showSuccessMessage(confirmPasswordInput);
+				return true;
+			};
+
+			personalNumberInput.addEventListener("input", isPersonalNumberValid);
+			mobileNumberInput.addEventListener("input", isMobileNumberValid);
+			passwordInput.addEventListener("input", isPasswordValid);
+			confirmPasswordInput.addEventListener("input", isConfirmPasswordValid);
+
+			form.addEventListener("submit", (e) => {
+				e.preventDefault();
+				if (isPersonalNumberValid() && isMobileNumberValid() && isPasswordValid() && isConfirmPasswordValid()) {
+					alert("Form submitted successfully!");
+				}
+			});
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	const isNameValid = () => {
 		const val = nameInput.value.trim();
 		if (val === "") {
