@@ -1,3 +1,86 @@
+function sliderFn() {
+	const slides = document.querySelectorAll(".slide");
+	const slidesWrapper = document.querySelector(".slider-wrapper");
+	let currentSlide = 0;
+
+	function renderSlides() {
+		slides.forEach((slide, index) => {
+			if (index === currentSlide) {
+				slide.classList.add("show-slide");
+			} else {
+				slide.classList.remove("show-slide");
+			}
+		});
+	}
+
+	function goToNextSlide() {
+		if (currentSlide === slides.length - 1) {
+			currentSlide = 0;
+		} else {
+			currentSlide++;
+		}
+		renderSlides();
+	}
+
+	// 2. ლექციაზე შექმნილ სლაიდერს დავამატოთ:
+	//    2.1. დავამატოთ სლაიდების ავტომატური ცვლილება 5 წამიანი ინტერვალით
+	//    2.2. როდესაც ავტომატურად ხდება სლაიდების შეცვლა თუ მაუსს მივიტან სურათთან, ავტომატური სლაიდი გაჩერდეს.
+	//    2.3. თუ მაუსი მიტანილი მაქვს სურათზე და შემდეგ გამოვწევ სურათიდან, ავტომატური სლაიდი გაგრძელდეს. მოუსმინეთ  mouseenter, mouseleave  ივენთებს
+
+	let slideInterval = setInterval(goToNextSlide, 5000);
+
+	slidesWrapper.addEventListener("mouseenter", () => {
+		if (slideInterval) {
+			// console.log("clear");
+			clearInterval(slideInterval);
+			slideInterval = null;
+		}
+	});
+	slidesWrapper.addEventListener("mouseleave", () => {
+		// console.log("set");
+		slideInterval = setInterval(goToNextSlide, 5000);
+	});
+}
+
+sliderFn();
+
+// 1. setTimeout ან setInterval - ის გამოყენებით გააკეთეთ საათი რომელიც იმუშავებს როგორც ნამდვილი სააათი. გამოიყენეთ ატვირთული სურათი (საათი.png).
+const clock = document.querySelector("#clock");
+const showTime = () => {
+	const date = new Date();
+	const hours = date.getHours();
+	const minutes = date.getMinutes();
+	const seconds = date.getSeconds();
+
+	clock.textContent = `${hours.toString().padStart(2, 0)}:${(
+		minutes + ""
+	).padStart(2, 0)}:${(seconds + "").padStart(2, 0)}`;
+
+	// clock.textContent = `${hours}:${minutes}:${seconds}`;
+};
+showTime();
+setInterval(showTime, 1000);
+
+//  3*(optional) დავამატოთ მარტივი countdown რომელიც გვიჩვენებს მომდევნო ლექციამდე (5 მარტი, 20:00) დარჩენილ დროს (დღე, საათი, წუთი)
+
+const countdown = document.querySelector("#countdown");
+const showCountdown = () => {
+	const currentDate = new Date();
+	const futureDate = new Date("Mar 12, 2025 20:00:00");
+	const diff = futureDate - currentDate;
+
+	const days = Math.floor(diff / 1000 / 60 / 60 / 24);
+	const hours = Math.floor(diff / 1000 / 60 / 60) % 24;
+	const minutes = Math.floor(diff / 1000 / 60) % 60;
+	const seconds = Math.floor(diff / 1000) % 60;
+
+	countdown.textContent = `${days} days ${hours} hours ${minutes} minutes`;
+};
+
+showCountdown();
+
+setInterval(showCountdown, 60000);
+
 const closeModalBtn = document.querySelector(".close-modal");
 const closeDialogBtn = document.querySelectorAll(".close-dialog");
 closeDialogBtn.forEach((btn) => {
