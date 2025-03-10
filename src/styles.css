@@ -1,0 +1,84 @@
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+dialog::backdrop {
+	background-color: rgba(0, 0, 0, 0.5);
+}
+form {
+	max-width: 600px;
+	margin: 50px auto;
+}
+.form-group {
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+	margin-bottom: 10px;
+}
+
+label:has(~ [required])::after {
+	content: "*";
+	color: red;
+	margin-left: 5px;
+	font-size: 20px;
+}
+input {
+	padding: 10px;
+	border: 3px solid #ccc;
+	outline: none;
+}
+.form-group.success input {
+	border-color: green;
+}
+.form-group.error input {
+	border-color: red;
+}
+.error-message {
+	height: 25px;
+	font-size: 14px;
+}
+
+.form-group.success .error-message {
+	color: green;
+}
+.form-group.error .error-message {
+	color: red;
+}
+
+button {
+	padding: 10px;
+	background-color: darkcyan;
+	color: white;
+	border: none;
+	cursor: pointer;
+}
+
+.modal {
+	display: none;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	background-color: rgba(0, 0, 0, 0.5);
+	justify-content: center;
+	align-items: center;
+}
+.modal.active {
+	display: flex;
+}
+.content {
+	background-color: white;
+	padding: 20px;
+	border-radius: 10px;
+	max-width: 800px;
+	width: 80%;
+}
+dialog {
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	padding: 20px;
+	border: none;
+}
